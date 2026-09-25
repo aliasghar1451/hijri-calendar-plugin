@@ -4,9 +4,9 @@ A drop-in date picker that shows the Misri-Hijri (Dawoodi Bohra) and Gregorian
 calendars side by side, with a toggle between them. Plain ES5 JavaScript — no
 jQuery, no date library, no build step.
 
-**[Open the live demo and full documentation »](https://YOUR-USERNAME.github.io/hijri-calendar-plugin/demo.html)**
+**[Open the live demo and full documentation »](https://aliasghar1451.github.io/hijri-calendar-plugin/)**
 
-`demo.html` is the real documentation: every feature below has a working,
+`index.html` is the real documentation: every feature below has a working,
 interactive example in it, plus copyable code for each one.
 
 ## Credits
@@ -116,7 +116,7 @@ picker.setMiqaatPriority(1 | 2 | 3 | 'all')
 The input also fires a bubbling `hcp:change` event carrying the `getDate()`
 payload.
 
-See `demo.html` for every option, attribute and a live example of each.
+See `index.html` for every option, attribute and a live example of each.
 
 ## Licence
 
