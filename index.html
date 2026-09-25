@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hijri + Gregorian Calendar Plugin — Demo</title>
+<link rel="stylesheet" href="src/hijri-calendar/hijri-calendar-plugin.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #f6f3ec;
+    color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 56px 32px 96px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8a857c;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 34px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .lede {
+    font-size: 16px;
+    color: #4a4740;
+    max-width: 60ch;
+    margin: 0 0 40px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e7e3dc;
+    border-radius: 14px;
+    padding: 28px 28px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 4px rgba(20,30,40,0.03);
+  }
+  .card h2 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #0f6b62;
+    margin: 0 0 18px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4a4740;
+    letter-spacing: 0.02em;
+  }
+  .field input[type="text"] {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #1a1a1a;
+    background: #fdfcfa;
+    border: 1px solid #d8d3c9;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+  .field input[type="text"]:focus {
+    border-color: #0f6b62;
+    box-shadow: 0 0 0 3px rgba(15,107,98,0.12);
+  }
+  table.deps{width:100%;border-collapse:collapse;margin:4px 0 14px;font-size:13px}
+  table.deps th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a857c;font-weight:600;padding:0 10px 7px 0;border-bottom:1px solid #e6e1d6}
+  table.deps td{padding:9px 10px 9px 0;border-bottom:1px solid #efebe2;vertical-align:top;color:#4a4740}
+  table.deps tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:600;letter-spacing:.04em;white-space:nowrap}
+  .tag-req{background:#0f6b62;color:#fff}
+  .tag-opt{background:#efebe2;color:#6b665d}
+  .tag-cond{background:#f4e6c8;color:#7a5b16}
+  .field-error{display:block;font-size:11.5px;color:#a3341f;margin-top:6px;min-height:14px}
+  .val-demo input.input-validation-error{border-color:#c0492c;box-shadow:0 0 0 3px rgba(192,73,44,.12)}
+  .field-hint {
+    font-size: 11px;
+    color: #8a857c;
+  }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .submit-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #f0ece4;
+  }
+  button.btn {
+    background: #0f6b62;
+    color: #fff;
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  button.btn:hover { background: #0a544c; }
+  button.btn-ghost {
+    background: transparent;
+    color: #4a4740;
+    border: 1px solid #d8d3c9;
+  }
+  button.btn-ghost:hover { background: #f0ece4; }
+
+  .submission {
+    background: #1a1a1a;
+    color: #e9e5dc;
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    margin-top: 14px;
+    min-height: 22px;
+  }
+  .submission .k { color: #c89b3c; }
+  .submission .v { color: #7fc7bd; }
+
+  details.docs {
+    background: #fff;
+    border: 1px solid #e7e3dc;
+    border-radius: 14px;
+    padding: 0;
+    margin-top: 24px;
+    overflow: hidden;
+  }
+  details.docs summary {
+    cursor: pointer;
+    padding: 18px 28px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #0f6b62;
+    list-style: none;
+  }
+  details.docs summary::-webkit-details-marker { display: none; }
+  details.docs[open] summary { border-bottom: 1px solid #f0ece4; }
+  details.docs .docs-body { padding: 22px 28px 28px; }
+    .card-desc {
+      font-size: 13px;
+      color: #4a4740;
+      margin: -6px 0 16px;
+      line-height: 1.6;
+    }
+    .card-desc code {
+      background: #f0ece4;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+  details.docs h3:first-child { margin-top: 0; }
+  pre {
+    background: #fbf9f4;
+    border: 1px solid #f0ece4;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color: #2a2a2a;
+  }
+  code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px; }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #e6f1ef;
+    color: #0f6b62;
+    font-size: 11px;
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="eyebrow">Plugin Demo</div>
+    <h1>Hijri + Gregorian Calendar</h1>
+    <p class="lede">
+      Click any field below. A calendar opens with a toggle between
+      <strong>Gregorian</strong> and <strong>Hijri</strong>. Pick a date in
+      either calendar — the form always submits the canonical Gregorian
+      <code>YYYY-MM-DD</code>.
+    </p>
+
+    <div class="card">
+      <h2>Dependencies &amp; load order</h2>
+      <p class="card-desc">
+        The plugin is standalone ES5 &mdash; <strong>no jQuery, no date
+        library, no polyfills</strong> for IE11+. Only the stylesheet is a hard
+        requirement. jQuery validate is needed only if you use
+        <code>gregorianValue</code> on validated, model-bound fields.
+      </p>
+      <table class="deps">
+        <thead>
+          <tr><th>File</th><th>Needed?</th><th>Version</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>hijri-calendar-plugin.css</code></td>
+            <td><span class="tag tag-req">required</span></td>
+            <td>ships with the plugin &mdash; keep the pair in sync</td>
+          </tr>
+          <tr>
+            <td><code>hijri-calendar-plugin.js</code></td>
+            <td><span class="tag tag-req">required</span></td>
+            <td>no dependencies</td>
+          </tr>
+          <tr>
+            <td><code>hijri-calendar-miqaats.js</code></td>
+            <td><span class="tag tag-opt">optional</span></td>
+            <td>load <em>after</em> the plugin; no version coupling</td>
+          </tr>
+          <tr>
+            <td><code>jquery.js</code></td>
+            <td><span class="tag tag-cond">validation only</span></td>
+            <td>1.7+ &mdash; any 1.x / 2.x / 3.x</td>
+          </tr>
+          <tr>
+            <td><code>jquery.validate.js</code></td>
+            <td><span class="tag tag-cond">validation only</span></td>
+            <td>1.9+ (1.19 / 1.20 tested)</td>
+          </tr>
+          <tr>
+            <td><code>jquery.validate.unobtrusive.js</code></td>
+            <td><span class="tag tag-cond">validation only</span></td>
+            <td>3.2.x or 4.0.x</td>
+          </tr>
+        </tbody>
+      </table>
+      <pre class="code">&lt;link rel="stylesheet" href="src/hijri-calendar/hijri-calendar-plugin.css"&gt;
+
+&lt;!-- validation stack first, if you use it --&gt;
+&lt;script src="jquery.min.js"&gt;&lt;/script&gt;
+&lt;script src="jquery.validate.min.js"&gt;&lt;/script&gt;
+&lt;script src="jquery.validate.unobtrusive.min.js"&gt;&lt;/script&gt;
+
+&lt;script src="hijri-calendar-plugin.js"&gt;&lt;/script&gt;
+&lt;script src="hijri-calendar-miqaats.js"&gt;&lt;/script&gt;   &lt;!-- optional --&gt;</pre>
+      <p style="font-size:13px; color:#4a4740; margin:10px 0 0;">
+        Loading the plugin <em>before</em> the validation stack still works
+        &mdash; it re-parses the form once the pickers are attached &mdash; but
+        the order above avoids the double parse. If Bootstrap is in play, put
+        the plugin's CSS <strong>after</strong> it so <code>.hcp-input</code>
+        wins. With no jQuery validate on the page the plugin enforces
+        <code>required</code> itself at submit time. Not required anywhere:
+        Bootstrap, moment/dayjs, or a particular ASP.NET version.
+      </p>
+    </div>
+
+    <form id="demo-form" class="card" novalidate>
+      <h2>Booking form</h2>
+
+      <div class="row">
+        <div class="field">
+          <label for="dob">Date of birth <span class="pill">Hijri default</span></label>
+          <input type="text" id="dob" name="dob"
+                 data-hijri-picker data-hijri-mode="hijri"
+                 placeholder="Pick a date">
+          <div class="field-hint">User sees Hijri; backend gets Gregorian.</div>
+        </div>
+
+        <div class="field">
+          <label for="checkin">Check-in <span class="pill">Gregorian default</span></label>
+          <input type="text" id="checkin" name="checkin"
+                 data-hijri-picker
+                 placeholder="Pick a date">
+          <div class="field-hint">User can flip to Hijri inside the picker.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="event-date">Event date</label>
+        <input type="text" id="event-date" name="event_date"
+               data-hijri-picker
+               placeholder="Pick a date">
+      </div>
+
+      <div class="submit-bar">
+        <button type="submit" class="btn">Submit</button>
+        <button type="reset" class="btn btn-ghost">Reset</button>
+      </div>
+
+      <div class="submission" id="submission">// Submit the form to see what the backend receives.</div>
+    </form>
+
+    <div class="card">
+      <h2>Restricted date fields</h2>
+
+      <div class="row">
+        <div class="field">
+          <label for="r-range">Within a date range <span class="pill">HTML attrs</span></label>
+          <input type="text" id="r-range" name="r_range"
+                 data-hijri-picker
+                 data-min-date="2026-06-10" data-max-date="2026-07-05"
+                 placeholder="10 Jun – 5 Jul 2026 only">
+          <div class="field-hint">Only dates between min and max are selectable.</div>
+        </div>
+
+        <div class="field">
+          <label for="r-future">No past dates <span class="pill">JS minDate</span></label>
+          <input type="text" id="r-future" name="r_future"
+                 placeholder="Today onwards">
+          <div class="field-hint">Set from JS to today's date.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="r-weekday">No Sundays / Fridays <span class="pill">HTML attrs</span></label>
+          <input type="text" id="r-weekday" name="r_weekday"
+                 data-hijri-picker
+                 data-disabled-weekdays="0,5"
+                 placeholder="Weekdays except Sun & Fri">
+          <div class="field-hint">0 = Sunday … 6 = Saturday.</div>
+        </div>
+
+        <div class="field">
+          <label for="r-blocked">Specific blocked dates <span class="pill">HTML attrs</span></label>
+          <input type="text" id="r-blocked" name="r_blocked"
+                 data-hijri-picker
+                 data-disabled-dates="2026-06-15,2026-06-18,2026-06-25"
+                 placeholder="3 holidays greyed out">
+          <div class="field-hint">15, 18 &amp; 25 Jun 2026 are blocked.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- isDisabled live demo -->
+    <div class="card">
+      <h2>isDisabled — custom predicate</h2>
+      <p class="card-desc">
+        The <code>isDisabled</code> function runs for every cell the calendar
+        draws. Return <code>true</code> to block that date. It receives
+        <strong>both</strong> the Gregorian and Hijri values, so you can gate
+        on either calendar.
+      </p>
+      <div class="row">
+        <div class="field">
+          <label for="is-ramadan">Block Ramadaan al-Moazzam (Hijri month 9)</label>
+          <input type="text" id="is-ramadan" name="is_ramadan"
+                 placeholder="Pick a date — Ramadaan greyed out">
+          <div class="field-hint">Every day in Hijri month 9 is blocked, across all years.</div>
+        </div>
+        <div class="field">
+          <label for="is-even">Block even Gregorian days</label>
+          <input type="text" id="is-even" name="is_even"
+                 placeholder="Only odd days selectable">
+          <div class="field-hint">2nd, 4th, 6th … of every month are greyed out.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- setConstraints live demo -->
+    <div class="card">
+      <h2>setConstraints — live range linking</h2>
+      <p class="card-desc">
+        Call <code>picker.setConstraints({...})</code> at any time to update
+        the restrictions. The calendar re-renders immediately if it is open.
+        The classic use-case is linking a <em>from</em> and <em>to</em> pair:
+        when the user picks a departure date, the return field's
+        <code>minDate</code> is updated automatically.
+      </p>
+      <div class="row">
+        <div class="field">
+          <label for="sc-from">Departure date</label>
+          <input type="text" id="sc-from" name="sc_from"
+                 placeholder="Pick departure">
+          <div class="field-hint" id="sc-from-hint">Pick this first.</div>
+        </div>
+        <div class="field">
+          <label for="sc-to">Return date</label>
+          <input type="text" id="sc-to" name="sc_to"
+                 placeholder="Pick return (after departure)">
+          <div class="field-hint" id="sc-to-hint">Dates before departure will be greyed out once you pick one.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>gregorianValue &mdash; drop-in replacement mode</h2>
+      <p class="card-desc">
+        Normally the visible input submits its display text and the Gregorian
+        date arrives as <code>&lt;name&gt;_gregorian</code>. With
+        <code>gregorianValue</code> on, the input's <strong>own name</strong>
+        submits <code>YYYY-MM-DD</code> as well &mdash; so you can swap this
+        plugin into an existing app without changing any server code. The
+        <code>_gregorian</code> field is still sent, for compatibility.
+      </p>
+      <form id="gv-form">
+        <div class="row">
+          <div class="field">
+            <label for="gv-off">Default mode <span class="pill">off</span></label>
+            <input type="text" id="gv-off" name="gv_off"
+                   data-hijri-picker data-hijri-mode="hijri"
+                   placeholder="Pick a date">
+            <div class="field-hint"><code>gv_off</code> = display text</div>
+          </div>
+          <div class="field">
+            <label for="gv-on">gregorianValue <span class="pill">on</span></label>
+            <input type="text" id="gv-on" name="gv_on"
+                   data-hijri-picker data-hijri-mode="hijri"
+                   data-gregorian-value
+                   placeholder="Pick a date">
+            <div class="field-hint"><code>gv_on</code> = <code>YYYY-MM-DD</code></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="gv-optout">Global default ON, this field opted out
+            <span class="pill">data-gregorian-value="false"</span></label>
+          <input type="text" id="gv-optout" name="gv_optout"
+                 data-hijri-picker data-hijri-mode="hijri"
+                 data-gregorian-value="false"
+                 placeholder="Pick a date">
+          <div class="field-hint"><code>gv_optout</code> = display text, even though a global default is set</div>
+        </div>
+        <div class="submit-bar">
+          <button type="submit" class="btn">Show what the server gets</button>
+        </div>
+        <div class="submission" id="gv-out">// Pick both dates, then submit.</div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>ASP.NET MVC &mdash; asp-for + jQuery unobtrusive validation</h2>
+      <p class="card-desc">
+        <code>gregorianValue</code> moves the field's <code>name</code> onto a
+        hidden sibling, and jQuery validate keys every rule off
+        <code>name</code>. So the plugin moves <code>asp-for</code>'s
+        <code>data-val-*</code> attributes across with it: validation runs
+        against the canonical <code>YYYY-MM-DD</code> value (not the display
+        string, which no date rule could parse), the hidden field is tagged
+        <code>.hcp-validated</code> so <code>ignore: ":hidden"</code> stops
+        skipping it, and the error/valid classes are mirrored back onto the
+        visible box. Your <code>data-valmsg-for</code> span needs no change.
+        Submit this empty, then pick a date &mdash; the error clears.
+      </p>
+      <form id="val-form" class="val-demo">
+        <div class="row">
+          <div class="field">
+            <label for="Trip_Departure">Departure <span class="pill">required</span></label>
+            <input type="text" id="Trip_Departure" name="Trip.Departure"
+                   data-hijri-picker data-hijri-mode="hijri" data-gregorian-value
+                   data-val="true" data-val-required="Departure date is required."
+                   data-val-date="Enter a valid date."
+                   placeholder="Pick a date">
+            <span class="field-error" data-valmsg-for="Trip.Departure" data-valmsg-replace="true"></span>
+          </div>
+          <div class="field">
+            <label for="Trip_Notes">Reference <span class="pill">required</span></label>
+            <input type="text" id="Trip_Notes" name="Trip.Notes"
+                   data-val="true" data-val-required="Reference is required."
+                   placeholder="Any text">
+            <span class="field-error" data-valmsg-for="Trip.Notes" data-valmsg-replace="true"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="Trip_Return">Return — plain HTML <code>required</code>,
+            no data-val attributes <span class="pill">promoted</span></label>
+          <input type="text" id="Trip_Return" name="Trip.Return" required
+                 data-hijri-picker data-hijri-mode="hijri" data-gregorian-value
+                 placeholder="Pick a date">
+          <span class="field-error" data-valmsg-for="Trip.Return" data-valmsg-replace="true"></span>
+          <div class="field-hint">Native <code>required</code> can't fire on a
+            readonly input, so the plugin promotes it to
+            <code>data-val-required</code> on the hidden field.</div>
+        </div>
+        <div class="submit-bar">
+          <button type="submit" class="btn">Validate &amp; show what the server gets</button>
+        </div>
+        <div class="submission" id="val-out">// Submit to see validation run.</div>
+      </form>
+      <pre class="code">@* Razor — nothing unusual, just add the two attributes *@
+&lt;input asp-for="Trip.Departure" data-hijri-picker data-gregorian-value /&gt;
+&lt;span asp-validation-for="Trip.Departure"&gt;&lt;/span&gt;
+
+@* Whole app at once, before the pickers attach: *@
+&lt;script&gt;HijriCalendar.setDefaults({ gregorianValue: true });&lt;/script&gt;
+
+// Injected a validated date field later (partial view / AJAX modal)?
+// Attach the picker first, then re-wire:
+HijriCalendar.attach(input, { gregorianValue: true });
+HijriCalendar.wireUnobtrusive();</pre>
+      <p style="font-size:13px; color:#4a4740; margin:10px 0 0;">
+        Model binding is unaffected &mdash; <code>Trip.Departure</code> posts
+        <code>2026-05-06</code>, which <code>DateTime</code> binds natively.
+        <code>wireUnobtrusive()</code> is called for you on load; it is a no-op
+        when jQuery validate isn't on the page.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Miqaat markers</h2>
+      <p class="card-desc">
+        Load the optional <code>hijri-calendar-miqaats.js</code> and days
+        carrying an occasion get a marker: a <strong>sun</strong> for a day
+        miqaat, a <strong>moon</strong> for a night one, and
+        <strong>both</strong> when the date has both. Hover a marked day to
+        see the titles. Marker colour follows the highest priority on that
+        day &mdash; <span style="color:#b8860b;font-weight:600">gold</span>
+        major, <span style="color:#0f6b62;font-weight:600">teal</span>
+        notable, <span style="color:#8c867b;font-weight:600">grey</span> minor.
+        By default only <strong>priority 1 and 2</strong> occasions are shown
+        &mdash; minor (priority 3) ones are opt-in via
+        <code>data-miqaat-priority="3"</code>.
+      </p>
+      <div class="row">
+        <div class="field">
+          <label for="mq-on">Markers shown <span class="pill">default</span></label>
+          <input type="text" id="mq-on" name="mq_on"
+                 data-hijri-picker data-hijri-mode="hijri"
+                 placeholder="Open and hover a marked day">
+          <div class="field-hint">Try Moharram 10, Ramadaan 22, or Zilhaj 9.</div>
+        </div>
+        <div class="field">
+          <label for="mq-off">Markers hidden
+            <span class="pill">data-show-miqaats="false"</span></label>
+          <input type="text" id="mq-off" name="mq_off"
+                 data-hijri-picker data-hijri-mode="hijri"
+                 data-show-miqaats="false"
+                 placeholder="Plain calendar">
+          <div class="field-hint">Same picker, markers suppressed.</div>
+        </div>
+        <div class="field">
+          <label for="mq-minor">Minor included
+            <span class="pill">data-miqaat-priority="3"</span></label>
+          <input type="text" id="mq-minor" name="mq_minor"
+                 data-hijri-picker data-hijri-mode="hijri"
+                 data-miqaat-priority="3"
+                 placeholder="Open and compare">
+          <div class="field-hint">Extra grey markers vs. the first field.</div>
+        </div>
+      </div>
+      <div class="submit-bar">
+        <button type="button" class="btn btn-ghost" id="mq-toggle">Toggle markers on the first field</button>
+      </div>
+      <div class="submission" id="mq-out">// Miqaats on the date you pick will be listed here.</div>
+    </div>
+
+    <details class="docs">
+      <summary>How to drop into your project</summary>
+      <div class="docs-body">
+
+        <h3>1. Include the two files</h3>
+<pre>&lt;link rel="stylesheet" href="src/hijri-calendar/hijri-calendar-plugin.css"&gt;
+&lt;script src="hijri-calendar-plugin.js"&gt;&lt;/script&gt;</pre>
+
+        <h3>2. Mark any input you want to bind</h3>
+<pre>&lt;input type="text" name="dob" data-hijri-picker&gt;
+&lt;!-- default mode = "gregorian". Force Hijri default: --&gt;
+&lt;input type="text" name="hijri_dob" data-hijri-picker data-hijri-mode="hijri"&gt;</pre>
+
+        <h3>3. Or attach manually from JS</h3>
+<pre>HijriCalendar.attach(document.getElementById('myInput'), {
+  defaultMode: 'hijri',
+  onChange: function (val) {
+    console.log(val.gregorian); // "2026-05-06"
+    console.log(val.hijri);     // { hy: 1447, hm: 11, hd: 19 }
+  }
+});</pre>
+
+        <h3>Restricting / greying out dates</h3>
+        <p style="font-size:13px; color:#4a4740; margin:0 0 10px;">
+          Every restriction works both as an <strong>HTML attribute</strong>
+          and as a <strong>JS option</strong>. Blocked dates render with a
+          hatched grey background, a strike-through number, and are not
+          clickable. All values are Gregorian <code>YYYY-MM-DD</code>.
+        </p>
+
+        <p style="font-size:13px; color:#4a4740; margin:14px 0 6px; font-weight:600;">A) Pure HTML — data attributes</p>
+<pre>&lt;!-- Only allow a date range (min..max inclusive) --&gt;
+&lt;input type="text" name="visit" data-hijri-picker
+       data-min-date="2026-06-10"
+       data-max-date="2026-07-05"&gt;
+
+&lt;!-- Block weekdays: 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat --&gt;
+&lt;input type="text" name="appt" data-hijri-picker
+       data-disabled-weekdays="0,5"&gt;   &lt;!-- no Sundays or Fridays --&gt;
+
+&lt;!-- Block a specific list of dates (comma separated) --&gt;
+&lt;input type="text" name="slot" data-hijri-picker
+       data-disabled-dates="2026-06-15,2026-06-18,2026-06-25"&gt;</pre>
+
+        <p style="font-size:13px; color:#4a4740; margin:14px 0 6px; font-weight:600;">B) JavaScript — options</p>
+<pre>HijriCalendar.attach(input, {
+  minDate: '2026-06-01',                 // earliest selectable
+  maxDate: '2026-12-31',                 // latest selectable
+  disabledWeekdays: [0, 6],              // block Sun + Sat
+  disabledDates: ['2026-07-04', '2026-08-14'],
+
+  // Custom rule — return true to BLOCK the date.
+  // Receives both calendars so you can gate on Hijri too.
+  isDisabled: function (d) {
+    // d = { gy, gm, gd, gregorian, weekday, hijri:{hy,hm,hd} }
+    if (d.hijri.hm === 9) return true;   // block all of Ramadan
+    return false;
+  }
+});</pre>
+
+        <h3>How isDisabled works</h3>
+        <p style="font-size:13px; color:#4a4740; margin:0 0 10px;">
+          The plugin calls <code>isDisabled(d)</code> once for every day-cell
+          it renders. The argument <code>d</code> has these fields:
+        </p>
+<pre>d = {
+  gy: 2026, gm: 6, gd: 15,         // Gregorian year / month / day
+  gregorian: '2026-06-15',          // ISO string, ready to compare
+  weekday: 1,                       // 0=Sun 1=Mon ... 6=Sat
+  hijri: { hy: 1447, hm: 12, hd: 20 } // Hijri equivalent
+}</pre>
+        <p style="font-size:13px; color:#4a4740; margin:8px 0 0;">
+          Return <code>true</code> to make the cell greyed-out &amp;
+          non-clickable. It runs on top of <code>minDate</code>,
+          <code>maxDate</code>, <code>disabledWeekdays</code>, and
+          <code>disabledDates</code> — all four are checked independently and
+          any one blocking is enough to disable the cell.
+        </p>
+<pre>// Block every day during Ramadaan al-Moazzam across all years:
+isDisabled: function (d) { return d.hijri.hm === 9; }
+
+// Block even Gregorian days:
+isDisabled: function (d) { return d.gd % 2 === 0; }
+
+// Block everything in July:
+isDisabled: function (d) { return d.gm === 7; }
+
+// Block a whole Hijri year:
+isDisabled: function (d) { return d.hijri.hy === 1448; }
+
+// Allow ONLY the next 14 days from today:
+isDisabled: function (d) {
+  var today = new Date();
+  var t = new Date(d.gy, d.gm - 1, d.gd);
+  var diffDays = (t - today) / 86400000;
+  return diffDays &lt; 0 || diffDays &gt; 14;
+}</pre>
+
+        <p style="font-size:13px; color:#4a4740; margin:14px 0 6px; font-weight:600;">C) Change restrictions at runtime with setConstraints</p>
+        <p style="font-size:13px; color:#4a4740; margin:0 0 8px;">
+          <code>picker.setConstraints({...})</code> accepts the same keys as
+          the original options. Only the keys you pass are updated — others
+          remain unchanged. The calendar re-renders immediately if it is
+          currently open.
+        </p>
+<pre>var picker = HijriCalendar.attach(input);
+
+// Narrow the allowed window at any time:
+picker.setConstraints({ minDate: '2026-06-20', maxDate: '2026-06-30' });
+
+// Add a custom rule after the fact:
+picker.setConstraints({
+  isDisabled: function (d) { return d.weekday === 5; } // block Fridays
+});
+
+// Remove minDate (pass null to clear it):
+picker.setConstraints({ minDate: null });
+
+// Common pattern — never allow past dates:
+var t = new Date();
+var iso = t.getFullYear() + '-' +
+  String(t.getMonth()+1).padStart(2,'0') + '-' +
+  String(t.getDate()).padStart(2,'0');
+picker.setConstraints({ minDate: iso });</pre>
+
+        <p style="font-size:13px; color:#4a4740; margin:14px 0 6px; font-weight:600;">D) Two fields as a range (from / to)</p>
+<pre>var from = HijriCalendar.attach(fromInput, {
+  onChange: function (v) {
+    // lock the "to" field so it can't be before "from"
+    to.setConstraints({ minDate: v.gregorian });
+  }
+});
+var to = HijriCalendar.attach(toInput);</pre>
+
+        <h3>Submitting Gregorian under the input's own name</h3>
+        <p style="font-size:13px; color:#4a4740; margin:0 0 10px;">
+          By default your server reads the Gregorian date from
+          <code>&lt;name&gt;_gregorian</code>. If you are converting an
+          existing application and don't want to touch every page's
+          server-side code, turn on <code>gregorianValue</code> &mdash; the
+          input's own name then carries <code>YYYY-MM-DD</code>, while the box
+          still displays the Hijri (or Gregorian) date to the user.
+        </p>
+<pre>// ONE call flips the whole application. Put it right after the
+// plugin script tag, before the pickers are attached:
+&lt;script src="hijri-calendar-plugin.js"&gt;&lt;/script&gt;
+&lt;script&gt;HijriCalendar.setDefaults({ gregorianValue: true });&lt;/script&gt;
+
+// or per input, in HTML:
+&lt;input type="text" name="dob" data-hijri-picker data-gregorian-value&gt;
+
+// or per input, in JS:
+HijriCalendar.attach(input, { gregorianValue: true });
+
+// ...and exempt a single legacy field that must keep receiving the
+// display string, even though the app is flipped on globally:
+&lt;input type="text" name="legacy_dob" data-hijri-picker
+       data-gregorian-value="false"&gt;</pre>
+        <p style="font-size:13px; color:#4a4740; margin:10px 0 0;">
+          Precedence is always <strong>per-input JS option &rarr; per-input
+          data-attribute &rarr; <code>setDefaults()</code></strong>, so
+          <code>data-gregorian-value="false"</code> (or <code>"0"</code>)
+          reliably opts one field out of a global switch-on. The same
+          precedence applies to <code>data-hijri-mode</code>,
+          <code>data-min-date</code>, <code>data-max-date</code>,
+          <code>data-disabled-weekdays</code> and
+          <code>data-disabled-dates</code>.
+        </p>
+        <p style="font-size:13px; color:#4a4740; margin:10px 0 0;">
+          What each mode sends when the user picks 6 May 2026 in the Hijri view:
+        </p>
+<pre>// gregorianValue OFF (default)
+dob           = "20 Zilqadah al-Haraam 1447 AH"
+dob_gregorian = "2026-05-06"
+
+// gregorianValue ON
+dob           = "2026-05-06"      &lt;-- existing server code just works
+dob_gregorian = "2026-05-06"      &lt;-- still sent, for compatibility</pre>
+        <p style="font-size:13px; color:#4a4740; margin:10px 0 0;">
+          Mechanically, the plugin moves the <code>name</code> off the visible
+          input onto a hidden field (a form submits an input's
+          <em>value</em>, and here the displayed value must differ from the
+          submitted one). The visible input keeps its <code>id</code>, so
+          <code>&lt;label for="…"&gt;</code> and any JS that targets it by id
+          are unaffected. Read the display text with
+          <code>input.value</code> and the original name from
+          <code>input.dataset.hcpName</code>.
+        </p>
+
+        <h3>What the backend receives</h3>
+        <p style="font-size:13px; color:#4a4740; margin:0 0 10px;">
+          Next to every bound input, the plugin inserts a hidden field named
+          <code>&lt;name&gt;_gregorian</code> holding the canonical Gregorian
+          date as <code>YYYY-MM-DD</code> — regardless of which calendar the
+          user actually picked from.
+        </p>
+<pre>// User picked 20 Zilqadah al-Haraam 1447 in the Hijri view.
+// Form payload:
+//   dob           = "20 Zilqadah al-Haraam 1447 AH"  // display only
+//   dob_gregorian = "2026-05-06"                     // store this</pre>
+
+        <h3>Customise month names</h3>
+        <p style="font-size:13px; color:#4a4740; margin:0 0 10px;">
+          Override the names globally (affects every picker) or per-instance.
+          Pass 12 strings in calendar order — Moharram al-Haraam →
+          Zilhaj al-Haraam for Hijri, January → December for Gregorian.
+        </p>
+<pre>// Global — e.g. switch Hijri labels to Arabic script
+HijriCalendar.setHijriMonths([
+  '\u0645\u062d\u0631\u0651\u0645','\u0635\u0641\u0631','\u0631\u0628\u064a\u0639 \u0627\u0644\u0623\u0648\u0644','\u0631\u0628\u064a\u0639 \u0627\u0644\u062b\u0627\u0646\u064a',
+  '\u062c\u0645\u0627\u062f\u0649 \u0627\u0644\u0623\u0648\u0644\u0649','\u062c\u0645\u0627\u062f\u0649 \u0627\u0644\u0622\u062e\u0631\u0629','\u0631\u062c\u0628','\u0634\u0639\u0628\u0627\u0646',
+  '\u0631\u0645\u0636\u0627\u0646','\u0634\u0648\u0651\u0627\u0644','\u0630\u0648 \u0627\u0644\u0642\u0639\u062f\u0629','\u0630\u0648 \u0627\u0644\u062d\u062c\u0651\u0629'
+]);
+
+// Or per-instance — only for this one input
+HijriCalendar.attach(myInput, {
+  hijriMonths: ['Muh','Saf','Rab1','Rab2','Jum1','Jum2','Raj','Sha','Ram','Shw','Qad','Hij']
+});</pre>
+
+        <h3>Miqaat markers</h3>
+        <p style="font-size:13px; color:#4a4740; margin:0 0 10px;">
+          Miqaat support is an <strong>optional third file</strong>. Without
+          it the picker behaves exactly as before and shows no markers.
+        </p>
+<pre>&lt;link rel="stylesheet" href="src/hijri-calendar/hijri-calendar-plugin.css"&gt;
+&lt;script src="hijri-calendar-plugin.js"&gt;&lt;/script&gt;
+&lt;!-- optional: adds the occasion markers --&gt;
+&lt;script src="hijri-calendar-miqaats.js"&gt;&lt;/script&gt;</pre>
+        <p style="font-size:13px; color:#4a4740; margin:10px 0 0;">
+          A day with a <em>day</em> miqaat gets a sun, a <em>night</em> miqaat
+          gets a moon, and a date with both gets both. Hover (or keyboard-focus)
+          a marked day for the titles and descriptions; the same text is set as
+          the cell's <code>aria-label</code> for screen readers and touch.
+        </p>
+
+        <p style="font-size:13px; color:#4a4740; margin:14px 0 6px; font-weight:600;">Hiding the markers</p>
+<pre>&lt;!-- one field --&gt;
+&lt;input type="text" name="dob" data-hijri-picker data-show-miqaats="false"&gt;
+
+// one picker, in JS
+HijriCalendar.attach(input, { showMiqaats: false });
+
+// everywhere
+HijriCalendar.setDefaults({ showMiqaats: false });
+
+// at runtime
+var p = HijriCalendar.attach(input);
+p.setShowMiqaats(false);   // and true to bring them back
+
+// or drop the data entirely (hides them on every picker)
+HijriCalendar.setMiqaats(null);</pre>
+
+        <p style="font-size:13px; color:#4a4740; margin:14px 0 6px; font-weight:600;">Reading miqaats yourself</p>
+<pre>// by Hijri date
+HijriCalendar.getMiqaats(1448, 1, 10);
+// -> [ { title: 'Yawme Ashura', description: null,
+//        phase: 'day', priority: 1, year: null, month: 1, date: 10 }, ... ]
+
+// by Gregorian date
+HijriCalendar.getMiqaatsForGregorian(2026, 7, 30);
+
+// is any data loaded?
+HijriCalendar.hasMiqaatData();   // true once the add-on file is included
+
+// show them alongside the picked date
+HijriCalendar.attach(input, {
+  onChange: function (v) {
+    var list = HijriCalendar.getMiqaats(v.hijri.hy, v.hijri.hm, v.hijri.hd);
+    console.log(list.map(function (m) { return m.title; }));
+  }
+});</pre>
+
+        <p style="font-size:13px; color:#4a4740; margin:14px 0 6px; font-weight:600;">Supplying your own occasions</p>
+<pre>// replace the data outright
+HijriCalendar.setMiqaats([
+  { month: 1, date: 10, phase: 'day',   priority: 1,
+    year: null, title: 'Yawme Ashura', description: null }
+]);
+
+// or add your own on top of the bundled set
+HijriCalendar.addMiqaats([
+  { month: 6, date: 12, phase: 'night', priority: 2,
+    year: 1449, title: 'Our anniversary', description: 'Office closed' }
+]);</pre>
+        <p style="font-size:13px; color:#4a4740; margin:8px 0 0;">
+          Fields: <code>month</code>/<code>date</code> are 1-based Hijri
+          (1 = Moharram al-Haraam); <code>phase</code> is
+          <code>'day'</code> or <code>'night'</code> and picks the sun or moon;
+          <code>priority</code> 1/2/3 sets the marker colour; and
+          <code>year</code> is <code>null</code> for every year or a Hijri year
+          the occasion <em>starts from</em> (that is how the bundled data marks
+          the 52nd Dai's urus as beginning in 1435).
+        </p>
+
+        <h3>Public API</h3>
+<pre>HijriCalendar.attach(input, options)
+HijriCalendar.attachAll(selector)            // default '[data-hijri-picker]'
+HijriCalendar.toHijri(gy, gm, gd)            // -> { hy, hm, hd }
+HijriCalendar.toGregorian(hy, hm, hd)        // -> { gy, gm, gd }
+HijriCalendar.setDefaults({ ... })           // global option defaults
+HijriCalendar.getDefaults()                  // read them back
+HijriCalendar.setHijriMonths(names12)        // override global Hijri names
+HijriCalendar.setGregorianMonths(names12)    // override global Greg names
+
+// month names + calendar helpers (month numbers are 1-based,
+// unlike the upstream repo which uses 0-based months):
+HijriCalendar.HIJRI_MONTHS                   // string[12] long names
+HijriCalendar.HIJRI_MONTHS_SHORT             // string[12] short names
+HijriCalendar.getMonthName(hm)               // 9  -> 'Ramadaan al-Moazzam'
+HijriCalendar.getShortMonthName(hm)          // 9  -> 'Ramadaan'
+HijriCalendar.isKabisa(hy)                   // 1439 -> true (leap year)
+HijriCalendar.hijriMonthLength(hy, hm)       // days in that Hijri month
+
+// miqaats (needs hijri-calendar-miqaats.js)
+HijriCalendar.setMiqaats(list|null)          // replace all data
+HijriCalendar.addMiqaats(list)               // append entries
+HijriCalendar.getMiqaats(hy, hm, hd)         // -> array, priority 1-2 only
+HijriCalendar.getMiqaats(hy, hm, hd, 3)      // include minor occasions
+HijriCalendar.getMiqaats(hy, hm, hd, null)   // no priority cap
+HijriCalendar.getMiqaatsForGregorian(gy,gm,gd[, maxPriority])
+HijriCalendar.hasMiqaatData()                // -> boolean
+picker.setShowMiqaats(bool)                  // per-picker runtime toggle
+picker.setMiqaatPriority(3|'all')            // per-picker priority cap
+
+// instance methods (returned by attach()):
+picker.getDate()                             // -> null | { gregorian:'YYYY-MM-DD',
+                                             //      gy, gm, gd, hijri:{hy,hm,hd}, date:Date }
+picker.setDate('2026-05-06')                 // ISO string
+picker.setDate(new Date())                   // Date
+picker.setDate({ hy:1447, hm:11, hd:20 })    // Hijri parts
+picker.setDate(null)                         // clear (same as picker.clear())
+picker.setDate(v, { notify: true })          // also fire onChange / hcp:change
+                                             // (default: silent, so linked
+                                             //  pickers don't loop)
+HijriCalendar.parseDate(v)                   // -> {gy,gm,gd} | null
+// 'hcp:change' bubbles from the input on every user pick / clear,
+// with the getDate() payload in event.detail.
+picker.setConstraints({ minDate, maxDate, disabledWeekdays,
+                        disabledDates, isDisabled })
+
+// options for attach():
+//   showMiqaats:      false -> hide the sun/moon occasion markers
+//   miqaatPriority:   2 (default) | 1 | 3 | 'all'
+//                     highest priority number shown; 3 adds minor miqaats
+//   gregorianValue:   true -> input's own name submits YYYY-MM-DD
+//   defaultMode:      'hijri' | 'gregorian'
+//   hijriMonths:      string[12]   // per-instance month-name override
+//   gregMonths:       string[12]
+//   minDate / maxDate:'YYYY-MM-DD' // selectable range (inclusive)
+//   disabledWeekdays: number[]     // 0=Sun .. 6=Sat
+//   disabledDates:    string[]     // ['YYYY-MM-DD', ...]
+//   isDisabled:       fn(d)-&gt;bool // d={gy,gm,gd,gregorian,weekday,hijri}
+//   onChange:         fn({ gregorian, hijri })
+
+// HTML data-attributes (mirror the options):
+//   data-hijri-picker  data-hijri-mode="hijri"
+//   data-min-date  data-max-date
+//   data-disabled-weekdays="0,5"
+//   data-disabled-dates="2026-06-15,2026-06-18"
+//   data-show-miqaats="false"  data-gregorian-value="false"
+//   data-miqaat-priority="3"   // show minor occasions too (default 2)</pre>
+
+      </div>
+    </details>
+
+    <div class="card">
+      <h2>Credits</h2>
+      <p class="card-desc">
+        The calendar math and the miqaat data in this plugin are not original
+        work. Both were taken from
+        <a href="https://github.com/mygulamali/mumineen_calendar_js">mumineen_calendar_js</a>
+        by <a href="https://github.com/mygulamali">Murtaza Gulamali (@mygulamali)</a>,
+        whose implementation and help made this possible.
+      </p>
+      <ul style="font-size:13px;color:#4a4740;line-height:1.7;margin:0;padding-left:18px">
+        <li>The Misri-Hijri (Fatimid / Isma'ili / Tayyibi / Dawoodi Bohra)
+          conversion formulas, the 30-year kabisa cycle
+          (2, 5, 8, 10, 13, 16, 19, 21, 24, 27, 29) and the Julian-Day epoch
+          come from his <code>hijri_date.js</code>.</li>
+        <li>The Hijri month names are used verbatim from his
+          <code>MONTH_NAMES</code>.</li>
+        <li>The bundled miqaat list is transcribed from his
+          <code>source/data/miqaats.json</code>.</li>
+      </ul>
+      <p style="font-size:13px;color:#4a4740;margin:12px 0 0">
+        This plugin adds the picker UI, the dual-calendar toggle, date
+        restrictions and the ASP.NET validation handling on top of that
+        groundwork. Conversions were diffed against his implementation across
+        every day from 1900&ndash;2100 to confirm they agree. Please credit him
+        in any further reuse.
+      </p>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+  <script src="src/hijri-calendar/hijri-calendar-plugin.js"></script>
+  <script src="src/hijri-calendar/hijri-calendar-miqaats.js"></script>
+  <script>
+    // ASP.NET-style validation demo: report what the server would receive.
+    document.addEventListener('DOMContentLoaded', function () {
+      var f = document.getElementById('val-form');
+      if (!f) return;
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var out = document.getElementById('val-out');
+        // jQuery validate blocks navigation but not this listener — gate it,
+        // or the card would print a payload that was never sent.
+        if (window.jQuery && jQuery.validator && !jQuery(f).valid()) {
+          out.textContent = '// Blocked by validation \u2014 nothing submitted.';
+          return;
+        }
+        var lines = [];
+        new FormData(f).forEach(function (v, k) { lines.push(k + ' = ' + (v || '(empty)')); });
+        out.textContent = lines.join('\n');
+      });
+    });
+  </script>
+  <script>
+    // Demo form handler — render submission so user sees what the
+    // backend would actually receive.
+    var form = document.getElementById('demo-form');
+    var out = document.getElementById('submission');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var fd = new FormData(form);
+      var lines = [];
+      var keys = [];
+      fd.forEach(function (v, k) { keys.push([k, v]); });
+      if (!keys.length) {
+        out.textContent = '// (no values yet)';
+        return;
+      }
+      keys.forEach(function (kv) {
+        lines.push(
+          '<span class="k">' + escapeHtml(kv[0]) + '</span>: ' +
+          '<span class="v">' + escapeHtml(kv[1] || '(empty)') + '</span>'
+        );
+      });
+      out.innerHTML = lines.join('\n');
+    });
+
+    form.addEventListener('reset', function () {
+      setTimeout(function () {
+        // also clear the bound inputs' hidden fields + display
+        document.querySelectorAll('[data-hijri-picker]').forEach(function (i) {
+          if (i.__hcpPicker) i.__hcpPicker._clear();
+        });
+        out.textContent = '// Submit the form to see what the backend receives.';
+      }, 0);
+    });
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+      });
+    }
+
+    // JS-driven restriction example: "No past dates"
+    (function () {
+      var t = new Date();
+      var iso = t.getFullYear() + '-' +
+        String(t.getMonth() + 1).padStart(2, '0') + '-' +
+        String(t.getDate()).padStart(2, '0');
+      HijriCalendar.attach(document.getElementById('r-future'), {
+        minDate: iso
+      });
+    })();
+
+    // Demonstrate the global switch + per-field opt-out.
+    // setDefaults must run before the affected pickers are attached; we scope
+    // it to this one field so the other demo cards keep their documented
+    // default behaviour. (#gv-optout is attached here, so the later
+    // DOMContentLoaded auto-init is a no-op for it.)
+    HijriCalendar.setDefaults({ gregorianValue: true });
+    HijriCalendar.attachAll('#gv-optout');
+    HijriCalendar.setDefaults({ gregorianValue: false });
+
+    // Miqaat demo: list the miqaats for whatever date is picked, plus a
+    // runtime show/hide toggle.
+    (function () {
+      var out = document.getElementById('mq-out');
+      var picker = HijriCalendar.attach(document.getElementById('mq-on'), {
+        defaultMode: 'hijri',
+        onChange: function (v) {
+          var list = HijriCalendar.getMiqaats(v.hijri.hy, v.hijri.hm, v.hijri.hd);
+          if (!list.length) {
+            out.innerHTML = '<span class="k">' + escapeHtml(v.gregorian) +
+              '</span>: <span class="v">no miqaats on this day</span>';
+            return;
+          }
+          out.innerHTML = list.map(function (m) {
+            return '<span class="k">' + (m.phase === 'night' ? 'night' : 'day  ') +
+              '</span>  <span class="v">' + escapeHtml(m.title) + '</span>' +
+              (m.description ? '  ' + escapeHtml(m.description) : '');
+          }).join('\n');
+        }
+      });
+      var btn = document.getElementById('mq-toggle');
+      btn.addEventListener('click', function () {
+        var now = picker.setShowMiqaats(!picker.showMiqaats);
+        btn.textContent = now
+          ? 'Hide markers on the first field'
+          : 'Show markers on the first field';
+      });
+    })();
+
+    // gregorianValue demo form
+    (function () {
+      var f = document.getElementById('gv-form');
+      var out = document.getElementById('gv-out');
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var rows = [];
+        new FormData(f).forEach(function (v, k) {
+          rows.push('<span class="k">' + escapeHtml(k) + '</span>: <span class="v">' +
+                    escapeHtml(v || '(empty)') + '</span>');
+        });
+        out.innerHTML = rows.length ? rows.join('\n') : '// (nothing selected)';
+      });
+    })();
+
+    // isDisabled demo 1: block all of Ramadaan al-Moazzam (Hijri month 9)
+    HijriCalendar.attach(document.getElementById('is-ramadan'), {
+      defaultMode: 'hijri',
+      isDisabled: function (d) {
+        return d.hijri.hm === 9; // whole Hijri month 9 = Ramadan
+      }
+    });
+
+    // isDisabled demo 2: block even Gregorian days
+    HijriCalendar.attach(document.getElementById('is-even'), {
+      isDisabled: function (d) {
+        return d.gd % 2 === 0;
+      }
+    });
+
+    // setConstraints demo: linked from / to date range
+    (function () {
+      var fromHint = document.getElementById('sc-from-hint');
+      var toHint   = document.getElementById('sc-to-hint');
+
+      var toPicker = HijriCalendar.attach(document.getElementById('sc-to'), {
+        onChange: function (v) {
+          toHint.textContent = 'Return: ' + v.gregorian;
+        }
+      });
+
+      var fromPicker = HijriCalendar.attach(document.getElementById('sc-from'), {
+        onChange: function (v) {
+          // As soon as a departure is picked, lock the return field
+          // so it can't be set to an earlier date.
+          toPicker.setConstraints({ minDate: v.gregorian });
+          fromHint.textContent = 'Departure: ' + v.gregorian;
+          toHint.textContent = 'Now pick a return date on or after ' + v.gregorian;
+          // If the existing return date is now before the new departure, clear it.
+          if (toPicker.selected) {
+            var sel = toPicker.selected;
+            var selIso = sel.gy + '-' +
+              String(sel.gm).padStart(2,'0') + '-' +
+              String(sel.gd).padStart(2,'0');
+            if (selIso < v.gregorian) {
+              toPicker._clear();
+              toHint.textContent = 'Previous return was before departure — cleared. Pick again.';
+            }
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
